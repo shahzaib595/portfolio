@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Zara Voss</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero { padding-top: calc(var(--nav-h) + 5rem); }
+
+    .bio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem; align-items: start;
+    }
+    .bio-p {
+      font-size: 0.975rem; color: var(--ink-2);
+      line-height: 1.8; margin-bottom: 1.2rem;
+    }
+    .bio-p strong { color: var(--ink); font-weight: 500; }
+    .bio-p .hl   { color: var(--orange); }
+
+    .detail-row {
+      border-left: 2px solid var(--rule-bold);
+      padding: 0.75rem 0 0.75rem 1.25rem;
+      display: flex; flex-direction: column; gap: 0.25rem;
+    }
+    .detail-row.accent { border-color: var(--orange); }
+    .detail-lbl {
+      font-family: 'Fira Code', monospace; font-size: 0.6rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+    }
+    .detail-lbl.accent { color: var(--orange); }
+    .detail-val { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+    .detail-val.live { color: var(--lime); }
+
+    /* Skills */
+    .skills-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 3rem;
+    }
+    .skill-row { display: flex; flex-direction: column; gap: 0.5rem; }
+    .skill-top { display: flex; align-items: center; justify-content: space-between; }
+    .skill-name { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; color: var(--ink); }
+    .skill-cat  { font-family: 'Fira Code', monospace; font-size: 0.56rem; color: var(--ink-3); letter-spacing: 0.1em; }
+    .skill-pct  { font-family: 'Fira Code', monospace; font-size: 0.65rem; color: var(--orange); }
+    .bar-bg { height: 1px; background: var(--rule-bold); position: relative; overflow: hidden; }
+    .bar-fill {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--orange), var(--lime));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 1.1s cubic-bezier(.16,1,.3,1);
+    }
+    .bar-fill.go { transform: scaleX(1); }
+
+    /* Timeline */
+    .tl { position: relative; padding-left: 1.75rem; }
+    .tl::before {
+      content: ''; position: absolute; left: 0; top: 0.5rem; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, var(--orange), var(--purple), transparent);
+    }
+    .tl-item { position: relative; padding-bottom: 2.75rem; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot {
+      position: absolute; left: -2.2rem; top: 0.35rem;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--orange); border: 2px solid var(--void);
+      box-shadow: 0 0 8px rgba(255,92,26,0.4);
+    }
+    .tl-year { font-family: 'Fira Code', monospace; font-size: 0.6rem; letter-spacing: 0.14em; color: var(--orange); text-transform: uppercase; margin-bottom: 0.35rem; }
+    .tl-role { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--ink); margin-bottom: 0.2rem; }
+    .tl-co   { font-family: 'Syne', sans-serif; font-size: 0.85rem; color: var(--purple); font-weight: 500; margin-bottom: 0.6rem; }
+    .tl-desc { font-size: 0.85rem; color: var(--ink-2); line-height: 1.7; }
+
+    /* Tools */
+    .tools-cloud { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tool {
+      font-family: 'Fira Code', monospace; font-size: 0.65rem;
+      color: var(--ink-2); background: var(--surface);
+      border: 1px solid var(--rule); padding: 0.35rem 0.8rem;
+      letter-spacing: 0.05em; transition: all 0.2s;
+    }
+    .tool:hover { color: var(--orange); border-color: rgba(255,92,26,0.3); background: rgba(255,92,26,0.05); }
+
+    /* Values */
+    .val-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--rule); }
+    .val-card {
+      background: var(--void); padding: 2rem 1.75rem;
+      transition: background 0.3s;
+    }
+    .val-card:hover { background: var(--surface); }
+    .val-n { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.5rem; letter-spacing: -0.05em; color: rgba(255,92,26,0.15); display: block; margin-bottom: 0.75rem; }
+    .val-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--ink); margin-bottom: 0.6rem; }
+    .val-desc  { font-size: 0.84rem; color: var(--ink-2); line-height: 1.65; }
+
+    @media (max-width: 860px) {
+      .bio-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .val-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="cur"></div><div id="cur-ring"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Zara<span>.</span>Voss</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Hire Me</a>
+    <button class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero-bg-text" aria-hidden="true">ABOUT</div>
+    <div class="wrap" style="position:relative;z-index:1">
+      <div class="page-hero-label">About Me</div>
+      <h1 class="page-hero-title">The person<br>behind the <em>code.</em></h1>
+      <p class="page-hero-sub">Developer by discipline. Designer by obsession. Six years building products that refuse to be forgettable.</p>
+    </div>
+  </header>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="mq1"></div>
+  </div>
+
+  <!-- BIO -->
+  <section class="section">
+    <div class="bio-grid">
+      <div>
+        <p class="bio-p reveal"><strong>I started in design</strong> — obsessing over the pixel, the kerning, the affordance. Then I discovered that writing code gave me the same feeling as a perfectly executed layout, and I never looked back.</p>
+        <p class="bio-p reveal">Today I operate across the full stack — from <span class="hl">WebGL shaders</span> to <span class="hl">database query plans</span>. I believe great digital products appear when design and engineering are treated as one craft, not two departments that throw files over a wall.</p>
+        <p class="bio-p reveal">I've shipped products for Y Combinator-backed startups, global design agencies, and independent founders. Six years in, the constant is this: <strong>constraints are the most creative tool we have.</strong></p>
+        <p class="bio-p reveal">When I'm not building, I'm writing about creative technology, contributing to open-source tooling, and finding the places where WebGL makes the browser feel alive.</p>
+        <div style="display:flex;gap:0.875rem;flex-wrap:wrap;margin-top:2rem" class="reveal">
+          <a href="projects.html" class="btn btn-primary">See My Work →</a>
+          <a href="contact.html" class="btn btn-ghost">Work Together</a>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1.5rem" id="detailsPanel"></div>
+    </div>
+  </section>
+
+  <div class="section-rule"></div>
+
+  <!-- SKILLS -->
+  <section class="section">
+    <div class="section-label reveal">Technical Depth</div>
+    <h2 class="section-heading reveal" style="margin-bottom:3rem">Craft &amp; <em>capability</em></h2>
+    <div class="skills-grid" id="skillsGrid"></div>
+
+    <div style="margin-top:3.5rem">
+      <div class="section-label reveal" style="margin-bottom:1.25rem">Tools &amp; Tech</div>
+      <div class="tools-cloud reveal" id="toolsCloud"></div>
+    </div>
+  </section>
+
+  <div class="section-rule"></div>
+
+  <!-- EXPERIENCE + VALUES -->
+  <section class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem">
+      <div>
+        <div class="section-label reveal">Experience</div>
+        <h2 class="section-heading reveal" style="margin-bottom:3rem">Where I've <em>been</em></h2>
+        <div class="tl" id="tlEl"></div>
+      </div>
+      <div>
+        <div class="section-label reveal">Principles</div>
+        <h2 class="section-heading reveal" style="margin-bottom:2rem">How I <em>work</em></h2>
+        <div class="val-grid" id="valGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html" class="footer-logo">Zara<span>.</span>Voss</a>
+    <nav class="footer-nav">
+      <a href="about.html">About</a><a href="projects.html">Projects</a>
+      <a href="portfolio.html">Portfolio</a><a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <span class="footer-copy">© 2024 Zara Voss.</span>
+  </footer>
+
+  <script src="data.js"></script><script src="main.js"></script>
+  <script>
+    /* Details panel */
+    const details = [
+      { label:'Based In',     val:'Berlin, Germany',                accent:false },
+      { label:'Available For',val:'Freelance · Full-time · Studio', accent:false },
+      { label:'Experience',   val:'6+ Years',                       accent:false },
+      { label:'Focus',        val:'Web · Mobile · Creative Dev',    accent:false },
+      { label:'Education',    val:'B.Sc. CS — TU Berlin',           accent:false },
+      { label:'Status',       val:'● Open to opportunities',        accent:true, live:true },
+    ];
+    document.getElementById('detailsPanel').innerHTML = details.map(d => `
+      <div class="detail-row ${d.accent?'accent':''} reveal">
+        <span class="detail-lbl ${d.accent?'accent':''}">${d.label}</span>
+        <span class="detail-val ${d.live?'live':''}">${d.val}</span>
+      </div>
+    `).join('');
+
+    /* Skills */
+    document.getElementById('skillsGrid').innerHTML = skills.map((s,i) => `
+      <div class="skill-row reveal" style="animation-delay:${i*0.07}s">
+        <div class="skill-top">
+          <div><span class="skill-name">${s.name}</span>&nbsp;<span class="skill-cat">${s.cat}</span></div>
+          <span class="skill-pct">${s.level}%</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill" data-w="${s.level/100}"></div>
+        </div>
+      </div>
+    `).join('');
+
+    const barObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.transform = `scaleX(${e.target.dataset.w})`;
+          e.target.classList.add('go');
+          barObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.bar-fill').forEach(b => barObs.observe(b));
+
+    /* Tools */
+    const tools = ['React','Next.js','Vue.js','TypeScript','Node.js','Express','GraphQL',
+      'PostgreSQL','MongoDB','Redis','Docker','AWS','Vercel','Three.js','WebGL','GSAP',
+      'Figma','Framer','Storybook','Jest','Python','Rust','Git','Tailwind CSS'];
+    document.getElementById('toolsCloud').innerHTML = tools.map(t=>`<span class="tool">${t}</span>`).join('');
+
+    /* Timeline */
+    document.getElementById('tlEl').innerHTML = experience.map((e,i) => `
+      <div class="tl-item reveal" style="animation-delay:${i*0.1}s">
+        <div class="tl-dot"></div>
+        <div class="tl-year">${e.year}</div>
+        <div class="tl-role">${e.role}</div>
+        <div class="tl-co">${e.company}</div>
+        <p class="tl-desc">${e.desc}</p>
+      </div>
+    `).join('');
+
+    /* Values */
+    const vals = [
+      { n:'01', title:'Craft before speed',       desc:'Shortcuts compound into debt. I build things right the first time, even when deadlines push back.' },
+      { n:'02', title:'Design &amp; code as one', desc:'The best work emerges when the same person is thinking about the interface and the architecture simultaneously.' },
+      { n:'03', title:'Honest documentation',      desc:'Every decision I make is documented for the team that inherits it. Code is a conversation across time.' },
+    ];
+    document.getElementById('valGrid').innerHTML = vals.map((v,i) => `
+      <div class="val-card reveal" style="animation-delay:${i*0.1}s">
+        <span class="val-n">${v.n}</span>
+        <div class="val-title">${v.title}</div>
+        <p class="val-desc">${v.desc}</p>
+      </div>
+    `).join('');
+
+    buildMarquee('mq1',['6 Years','TU Berlin','54 Projects','Open Source','Berlin','38 Clients','Clean Code','Full Stack']);
+  </script>
+</body>
+</html>

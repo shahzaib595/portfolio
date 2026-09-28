@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Zara Voss</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero { padding-top: calc(var(--nav-h) + 5rem); }
+
+    /* Filter bar */
+    .filter-bar {
+      position: sticky; top: var(--nav-h); z-index: 500;
+      padding: 1rem 3rem;
+      background: rgba(8,8,16,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .filter-lbl {
+      font-family: 'Fira Code', monospace; font-size: 0.6rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+      margin-right: 0.5rem;
+    }
+    .fbtn {
+      font-family: 'Fira Code', monospace; font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.38rem 0.9rem;
+      background: transparent; color: var(--ink-3);
+      border: 1px solid var(--rule); transition: all 0.2s;
+    }
+    .fbtn:hover { color: var(--orange); border-color: rgba(255,92,26,0.3); }
+    .fbtn.on { background: var(--orange); color: var(--void); border-color: var(--orange); }
+
+    /* Count */
+    .proj-count {
+      font-family: 'Fira Code', monospace; font-size: 0.62rem;
+      color: var(--ink-3); letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 2rem 3rem 0; max-width: 1320px; margin: 0 auto;
+    }
+
+    /* Grid */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--rule);
+      padding: 1px 3rem 0; max-width: 1320px; margin: 1.25rem auto 0;
+    }
+    .proj-card {
+      background: var(--void);
+      padding: 0;
+      display: flex; flex-direction: column;
+      transition: background 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .proj-card:hover { background: var(--surface); }
+    .proj-card.hide { display: none; }
+
+    /* Scan-line hover */
+    .proj-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--ac, var(--orange));
+      transform: scaleY(0); transform-origin: top;
+      transition: transform 0.4s ease;
+    }
+    .proj-card:hover::before { transform: scaleY(1); }
+
+    .proj-top {
+      padding: 2rem 2rem 0;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    }
+    .proj-body { padding: 1.25rem 2rem 2rem; display: flex; flex-direction: column; gap: 0.875rem; flex: 1; }
+    .proj-id { font-family: 'Fira Code', monospace; font-size: 0.58rem; color: var(--ink-3); letter-spacing: 0.14em; }
+    .proj-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.7rem; letter-spacing: -0.03em; line-height: 1.05; color: var(--ink);
+    }
+    .proj-desc { font-size: 0.885rem; color: var(--ink-2); line-height: 1.7; }
+    .proj-tech { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .proj-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1.1rem; border-top: 1px solid var(--rule); margin-top: auto;
+    }
+    .proj-year { font-family: 'Fira Code', monospace; font-size: 0.6rem; color: var(--ink-3); letter-spacing: 0.12em; }
+    .proj-result { font-family: 'Fira Code', monospace; font-size: 0.6rem; color: var(--ink-3); }
+    .proj-btn {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 0.45rem 1.1rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .feat-badge {
+      font-family: 'Fira Code', monospace; font-size: 0.54rem;
+      letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+      color: var(--void); background: var(--orange); padding: 0.18rem 0.55rem;
+    }
+
+    /* Appear animation on filter */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .proj-card.appear { animation: slideIn 0.35s ease forwards; }
+
+    @media (max-width: 860px) {
+      .filter-bar { padding: 1rem 1.5rem; }
+      .proj-grid { padding: 1px 1.5rem 0; grid-template-columns: 1fr; }
+      .proj-count { padding: 1.5rem 1.5rem 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="cur"></div><div id="cur-ring"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Zara<span>.</span>Voss</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Hire Me</a>
+    <button class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero-bg-text" aria-hidden="true">WORK</div>
+    <div class="wrap" style="position:relative;z-index:1">
+      <div class="page-hero-label">Projects</div>
+      <h1 class="page-hero-title">Selected <em>work</em></h1>
+      <p class="page-hero-sub">8 projects spanning web apps, fintech, creative development, mobile, and data visualisation.</p>
+    </div>
+  </header>
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <span class="filter-lbl">Filter:</span>
+    <button class="fbtn on" data-f="all">All</button>
+    <button class="fbtn" data-f="Web App">Web App</button>
+    <button class="fbtn" data-f="FinTech">FinTech</button>
+    <button class="fbtn" data-f="Creative Dev">Creative Dev</button>
+    <button class="fbtn" data-f="Mobile">Mobile</button>
+    <button class="fbtn" data-f="SaaS">SaaS</button>
+    <button class="fbtn" data-f="Data Viz">Data Viz</button>
+    <button class="fbtn" data-f="E-Commerce">E-Commerce</button>
+    <button class="fbtn" data-f="HealthTech">HealthTech</button>
+  </div>
+
+  <div class="proj-count" id="pCount"></div>
+  <div class="proj-grid" id="projGrid"></div>
+
+  <!-- Bottom CTA -->
+  <div style="max-width:1320px;margin:4rem auto 0;padding:3rem 3rem;border-top:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem">
+    <div>
+      <div style="font-family:'Fira Code',monospace;font-size:0.62rem;color:var(--orange);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.4rem">Have something in mind?</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-0.025em">Let's build it together.</div>
+    </div>
+    <a href="contact.html" class="btn btn-primary">Start a Project →</a>
+  </div>
+
+  <footer>
+    <a href="index.html" class="footer-logo">Zara<span>.</span>Voss</a>
+    <nav class="footer-nav">
+      <a href="about.html">About</a><a href="projects.html">Projects</a>
+      <a href="portfolio.html">Portfolio</a><a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <span class="footer-copy">© 2024 Zara Voss.</span>
+  </footer>
+
+  <script src="data.js"></script><script src="main.js"></script>
+  <script>
+    const colorTagMap = { '#FF5C1A':'tag-orange','#C8FF00':'tag-lime','#A855F7':'tag-purple','#06B6D4':'tag-cyan' };
+    const grid = document.getElementById('projGrid');
+    const countEl = document.getElementById('pCount');
+    let activeFilter = 'all';
+
+    function renderAll() {
+      grid.innerHTML = projects.map((p, i) => {
+        const visible = activeFilter === 'all' || p.category === activeFilter;
+        const tagCls = colorTagMap[p.color] || 'tag-orange';
+        return `
+        <div class="proj-card ${visible?'':'hide'}" data-cat="${p.category}" style="--ac:${p.color}">
+          <div class="proj-top">
+            <span class="proj-id">0${p.id} / 0${projects.length}</span>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              ${p.featured ? '<span class="feat-badge">Featured</span>' : ''}
+              <span class="tag ${tagCls}">${p.category}</span>
+            </div>
+          </div>
+          <div class="proj-body">
+            <h2 class="proj-title">${p.title}</h2>
+            <p class="proj-desc">${p.desc}</p>
+            <div class="proj-tech">${p.tech.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+            <div class="proj-foot">
+              <span class="proj-year">${p.year}</span>
+              <span class="proj-result">${p.result}</span>
+              <a href="#" class="proj-btn" style="background:${p.color};color:var(--void)">View →</a>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+      updateCount();
+    }
+
+    function updateCount() {
+      const visible = activeFilter === 'all' ? projects.length : projects.filter(p=>p.category===activeFilter).length;
+      countEl.textContent = `Showing ${visible} of ${projects.length} projects`;
+    }
+
+    renderAll();
+
+    /* Filter buttons */
+    document.querySelectorAll('.fbtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.dataset.f;
+        document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+        btn.classList.add('on');
+
+        document.querySelectorAll('.proj-card').forEach(card => {
+          const show = activeFilter === 'all' || card.dataset.cat === activeFilter;
+          if (show) {
+            card.classList.remove('hide');
+            card.classList.add('appear');
+            setTimeout(() => card.classList.remove('appear'), 400);
+          } else {
+            card.classList.add('hide');
+          }
+        });
+        updateCount();
+      });
+    });
+  </script>
+</body>
+</html>

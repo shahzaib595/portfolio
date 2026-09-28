@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Zara Voss</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero { padding-top: calc(var(--nav-h) + 5rem); }
+
+    /* Services grid — 2 cols */
+    .svc-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--rule);
+    }
+    .svc-card {
+      background: var(--void);
+      padding: 3rem 2.5rem;
+      display: flex; flex-direction: column; gap: 1.25rem;
+      position: relative; overflow: hidden;
+      transition: background 0.3s;
+    }
+    .svc-card:hover { background: var(--surface); }
+    .svc-card.hl { background: var(--surface-2); }
+    .svc-card.hl:hover { background: var(--surface); }
+
+    /* accent top bar */
+    .svc-bar {
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    }
+    /* background large icon */
+    .svc-bg-icon {
+      position: absolute; right: 1.5rem; bottom: 1rem;
+      font-family: 'Syne', sans-serif; font-size: 5rem;
+      opacity: 0.04; user-select: none; pointer-events: none;
+    }
+
+    .svc-head { display: flex; align-items: flex-start; justify-content: space-between; }
+    .svc-icon {
+      font-family: 'Syne', sans-serif; font-size: 2rem;
+      display: block; margin-bottom: 0.25rem;
+    }
+    .svc-hl-badge {
+      font-family: 'Fira Code', monospace; font-size: 0.54rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; font-weight: 500;
+      background: var(--lime); color: var(--void);
+    }
+
+    .svc-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.65rem; letter-spacing: -0.025em; color: var(--ink);
+    }
+    .svc-desc { font-size: 0.9rem; color: var(--ink-2); line-height: 1.72; }
+
+    .svc-features { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.25rem; }
+    .svc-feat {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-size: 0.875rem; color: var(--ink-2); line-height: 1.5;
+    }
+    .svc-feat::before {
+      content: '→';
+      font-family: 'Fira Code', monospace; font-size: 0.7rem;
+      flex-shrink: 0; margin-top: 0.1rem;
+    }
+
+    .svc-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1.5rem; border-top: 1px solid var(--rule); margin-top: auto; flex-wrap: wrap; gap: 1rem;
+    }
+    .svc-price {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.25rem; letter-spacing: -0.02em;
+    }
+    .svc-timeline {
+      font-family: 'Fira Code', monospace; font-size: 0.6rem;
+      color: var(--ink-3); letter-spacing: 0.12em; text-transform: uppercase;
+    }
+
+    /* Process */
+    .process-steps {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--rule);
+      counter-reset: step;
+    }
+    .p-step {
+      background: var(--void); padding: 2rem 1.75rem;
+      position: relative; transition: background 0.3s;
+      counter-increment: step;
+    }
+    .p-step:hover { background: var(--surface); }
+    .p-step::before {
+      content: counter(step, decimal-leading-zero);
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 2.5rem; letter-spacing: -0.05em;
+      color: rgba(255,92,26,0.12); display: block; margin-bottom: 0.75rem;
+    }
+    .p-step-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--ink); margin-bottom: 0.6rem;
+    }
+    .p-step-desc { font-size: 0.84rem; color: var(--ink-2); line-height: 1.65; }
+
+    /* FAQ */
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item {
+      border-bottom: 1px solid var(--rule);
+    }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 0; gap: 1.5rem;
+      font-family: 'Syne', sans-serif; font-weight: 600;
+      font-size: 1rem; color: var(--ink);
+      background: none; border: none; text-align: left; width: 100%;
+      transition: color 0.2s;
+    }
+    .faq-q:hover { color: var(--orange); }
+    .faq-arrow {
+      font-size: 0.9rem; color: var(--ink-3);
+      transition: transform 0.3s; flex-shrink: 0;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(45deg); color: var(--orange); }
+    .faq-item.open .faq-q { color: var(--orange); }
+    .faq-a {
+      font-size: 0.9rem; color: var(--ink-2); line-height: 1.75;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding-bottom: 1.4rem; }
+
+    @media (max-width: 860px) {
+      .svc-grid { grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 560px) {
+      .process-steps { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="cur"></div><div id="cur-ring"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Zara<span>.</span>Voss</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="services.html" class="active">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Hire Me</a>
+    <button class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-hero-bg-text" aria-hidden="true">SERVICES</div>
+    <div class="wrap" style="position:relative;z-index:1">
+      <div class="page-hero-label">Services</div>
+      <h1 class="page-hero-title">What I build<br>and <em>how.</em></h1>
+      <p class="page-hero-sub">Four disciplines. One obsession: products that work exactly as well as they look.</p>
+    </div>
+  </header>
+
+  <!-- Services -->
+  <section class="section">
+    <div class="section-label reveal">Offerings</div>
+    <h2 class="section-heading reveal" style="margin-bottom:2.5rem">Choose your <em>service</em></h2>
+    <div class="svc-grid" id="svcGrid"></div>
+  </section>
+
+  <div class="section-rule"></div>
+
+  <!-- Process -->
+  <section class="section">
+    <div class="section-label reveal">How I Work</div>
+    <h2 class="section-heading reveal" style="margin-bottom:2.5rem">The <em>process</em></h2>
+    <div class="process-steps" id="processEl"></div>
+  </section>
+
+  <div class="section-rule"></div>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start">
+      <div>
+        <div class="section-label reveal">Common Questions</div>
+        <h2 class="section-heading reveal" style="margin-bottom:0.75rem">FAQ</h2>
+        <p class="reveal" style="font-size:0.9rem;color:var(--ink-2);line-height:1.7;margin-top:1rem">Anything else? Drop me a message on the contact page.</p>
+      </div>
+      <div class="faq-list reveal" id="faqEl"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div style="margin:0 3rem 6rem;background:var(--surface);border:1px solid var(--rule);padding:4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem;position:relative;overflow:hidden">
+    <div style="position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(4rem,9vw,8rem);color:rgba(255,92,26,0.04);letter-spacing:-0.05em;user-select:none">HIRE ME</div>
+    <div style="position:relative;z-index:1">
+      <div style="font-family:'Fira Code',monospace;font-size:0.62rem;color:var(--orange);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.5rem">Let's get started</div>
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.5rem,3.5vw,2.5rem);letter-spacing:-0.03em">Ready to build something great?</h2>
+    </div>
+    <a href="contact.html" class="btn btn-primary" style="position:relative;z-index:1">Start a Project →</a>
+  </div>
+
+  <footer>
+    <a href="index.html" class="footer-logo">Zara<span>.</span>Voss</a>
+    <nav class="footer-nav">
+      <a href="about.html">About</a><a href="projects.html">Projects</a>
+      <a href="portfolio.html">Portfolio</a><a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <span class="footer-copy">© 2024 Zara Voss.</span>
+  </footer>
+
+  <script src="data.js"></script><script src="main.js"></script>
+  <script>
+    /* Services grid */
+    document.getElementById('svcGrid').innerHTML = services.map(s => `
+      <div class="svc-card ${s.highlight?'hl':''} reveal">
+        <div class="svc-bar" style="background:${s.accent}"></div>
+        <div class="svc-bg-icon" style="color:${s.accent}">${s.icon}</div>
+        <div class="svc-head">
+          <span class="svc-icon" style="color:${s.accent}">${s.icon}</span>
+          ${s.highlight ? '<span class="svc-hl-badge">Most Popular</span>' : ''}
+        </div>
+        <h2 class="svc-title">${s.title}</h2>
+        <p class="svc-desc">${s.desc}</p>
+        <div class="svc-features">
+          ${s.features.map(f=>`<div class="svc-feat" style="--ac:${s.accent}">${f}</div>`).join('')}
+        </div>
+        <div class="svc-footer">
+          <div>
+            <div class="svc-price" style="color:${s.accent}">${s.price}</div>
+            <div class="svc-timeline">Timeline: ${s.timeline}</div>
+          </div>
+          <a href="contact.html" class="btn" style="background:${s.accent};color:${s.highlight?'#080810':'#fff'}">Get Started →</a>
+        </div>
+      </div>
+    `).join('');
+
+    /* Process */
+    const steps = [
+      { title:'Discovery',    desc:'A detailed kickoff to understand your goals, constraints, users, and definition of success.' },
+      { title:'Planning',     desc:'Scope, timeline, and tech stack agreed in writing. No surprises.' },
+      { title:'Build & Iterate', desc:'Tight loops — weekly demos, async feedback, and continuous deployment from day one.' },
+      { title:'Launch & Support', desc:'Production-ready handoff with documentation, monitoring, and a 6-month support window.' },
+    ];
+    document.getElementById('processEl').innerHTML = steps.map(s => `
+      <div class="p-step reveal">
+        <div class="p-step-title">${s.title}</div>
+        <p class="p-step-desc">${s.desc}</p>
+      </div>
+    `).join('');
+
+    /* FAQ */
+    const faqs = [
+      { q:'Do you take on fixed-price projects?', a:'Yes — for well-scoped work. I prefer fixed-price for design and time-and-materials for development, but I\'m flexible based on what serves you best.' },
+      { q:'Can I see the source code?', a:'Absolutely. You own everything I build. Full source access is delivered at project close along with all documentation.' },
+      { q:'Do you work with teams or just founders?', a:'Both. I\'m comfortable as the sole builder or embedding in an existing team as a senior IC. I adapt to whatever structure is needed.' },
+      { q:'What if I need changes after launch?', a:'All projects include a 6-month support window. For ongoing work, I offer monthly retainers starting at $800/month.' },
+      { q:'How fast can you start?', a:'Usually within 1–2 weeks of contract signing, depending on my current load. Tell me your timeline and I\'ll be honest about availability.' },
+    ];
+    document.getElementById('faqEl').innerHTML = faqs.map(f => `
+      <div class="faq-item">
+        <button class="faq-q">${f.q}<span class="faq-arrow">+</span></button>
+        <div class="faq-a">${f.a}</div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-q').addEventListener('click', () => {
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+  </script>
+</body>
+</html>
